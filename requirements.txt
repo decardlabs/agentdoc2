@@ -1,0 +1,12 @@
+openai>=1.0.0
+# anthropic>=0.30.0    # 使用 OpenAI 兼容接口时可注释掉此条
+chromadb>=0.5.0
+langgraph>=0.2.0
+langfuse>=2.0.0
+pypdf>=4.0.0
+pandas>=2.0.0
+requests>=2.31.0
+guardrails-ai>=0.5.0
+# crewai>=0.60.0      # 实验 4 使用
+# pyautogen>=0.4.0    # 实验 4 使用
+rich>=13.0.0          # 终端美化输出
