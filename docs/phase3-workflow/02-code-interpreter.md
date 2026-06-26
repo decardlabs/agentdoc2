@@ -108,7 +108,7 @@ class DataAnalysisAgent:
     """Agent 可以动态生成代码来分析用户提供的数据"""
 
     def __init__(self):
-        self.client = OpenAI()
+        self.client = OpenAI(base_url="https://api.deepseek.com")
         self.tools = [CODE_INTERPRETER_TOOL]
 
     def analyze(self, data_description: str, csv_path: str = None) -> str:
@@ -121,7 +121,7 @@ class DataAnalysisAgent:
 
         # 构建 tool call
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{"role": "user", "content": f"""
 用户想分析的数据: {data_description}
 
@@ -141,7 +141,7 @@ class DataAnalysisAgent:
         messages = [{"role": "user", "content": f"分析数据: {data_description}"}]
         for _ in range(5):
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="deepseek-v4-flash",
                 messages=messages,
                 tools=self.tools,
             )

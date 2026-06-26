@@ -29,6 +29,8 @@ query → Agent 分析
 ## 实现一个简单的 Agentic RAG
 
 ```python
+from openai import OpenAI
+
 class AgenticRAG:
     def __init__(self, collection, llm_client, max_searches=5):
         self.collection = collection
@@ -41,7 +43,7 @@ class AgenticRAG:
         context_text = "\n\n".join(context) if context else "尚无上下文"
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{"role": "user", "content": f"""
 问题: {question}
 已有上下文: {context_text}
@@ -60,7 +62,7 @@ class AgenticRAG:
         context_text = "\n\n".join(context) if context else "尚无上下文"
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{"role": "user", "content": f"""
 原始问题: {question}
 已有上下文: {context_text}
@@ -98,7 +100,7 @@ class AgenticRAG:
         # 基于全部检索结果生成回答
         final_context = "\n\n---\n\n".join(context)
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{"role": "system", "content": f"""
 基于以下资料回答问题。如果资料不足以回答请明确说明。
 每次检索的查询: {', '.join(self.search_history)}
@@ -109,6 +111,21 @@ class AgenticRAG:
             {"role": "user", "content": question},
         ])
         return response.choices[0].message.content
+
+# ===== 使用示例 =====
+
+# 初始化 DeepSeek 客户端
+client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com",
+)
+
+rag_agent = AgenticRAG(
+    collection=collection,
+    llm_client=client,
+    max_searches=3,
+)
+result = rag_agent.answer("这篇论文用了什么创新方法？")
 ```
 
 ## Agentic RAG 进阶模式
@@ -139,7 +156,7 @@ def evaluate_retrieval_quality(question: str, chunks: list[str]) -> list[str]:
     filtered = []
     for chunk in chunks:
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{"role": "user", "content": f"""
 问题: {question}
 段落: {chunk}

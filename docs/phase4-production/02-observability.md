@@ -16,7 +16,7 @@
 
 | 数据 | 说明 | 示例 |
 |------|------|------|
-| LLM 调用 | 每次调用模型、输入、输出、token | gpt-4o-mini, 1200 tokens |
+| LLM 调用 | 每次调用模型、输入、输出、token | deepseek-v4-flash, 1200 tokens |
 | Tool 调用 | 工具名、参数、结果、耗时 | get_weather({city:深圳}), 200ms |
 | 成本 | 每次 LLM 调用的费用 | $0.003 |
 | 错误 | 错误类型、堆栈、上下文 | API timeout after 30s |

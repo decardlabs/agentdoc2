@@ -13,7 +13,7 @@ Function Calling 不是让 LLM 去执行函数，而是让 LLM **识别需要调
 
 ## Tool Schema 定义
 
-你需要告诉 LLM 有哪些工具可用，每个工具的参数结构是什么。OpenAI 使用 JSON Schema 描述：
+你需要告诉 LLM 有哪些工具可用，每个工具的参数结构是什么。DeepSeek 兼容 OpenAI 格式，使用 JSON Schema 描述：
 
 ```python
 tools = [
@@ -61,8 +61,15 @@ tools = [
 ## 核心调用模式
 
 ```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com",
+)
+
 response = client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="deepseek-v4-flash",
     messages=[{"role": "user", "content": "深圳今天穿什么？"}],
     tools=tools,           # ← 注册可用工具
     tool_choice="auto",    # ← 让模型自主决定是否调工具
@@ -106,11 +113,14 @@ def execute_tool(name: str, args: dict) -> str:
 import json
 from openai import OpenAI
 
-client = OpenAI()
+client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com",
+)
 
 # 第 1 轮：用户提问，LLM 返回 tool call
 response = client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="deepseek-v4-flash",
     messages=[{"role": "user", "content": "深圳今天穿什么？"}],
     tools=tools,
     tool_choice="auto",
@@ -133,7 +143,7 @@ if msg.tool_calls:
 
     # 让 LLM 基于工具结果生成最终回复
     final = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=messages,
         tools=tools,
     )
@@ -148,24 +158,20 @@ if msg.tool_calls:
 | `"required"` | 强制调用工具 | 测试或特定流程 |
 | `{"type": "function", "function": {"name": "xxx"}}` | 强制使用指定工具 | 定向路由 |
 
-## Anthropic 的 Tool Use
+## DeepSeek Function Calling 注意事项
 
-Anthropic 的 tool 定义使用类似但略有区别的格式：
+DeepSeek v4 Flash 的 Function Calling 完全兼容 OpenAI 格式，但需要注意：
+
+- **tool_call_id**：格式与 OpenAI 一致，使用 `call_` 前缀
+- **并行工具调用**：支持一次返回多个 tool_calls（parallel tool calling）
+- **tool_choice 行为**：`"auto"`、`"required"`、`"none"` 三种策略均支持
+- **严格模式**：不支持 OpenAI 的 `strict` 参数，但 JSON Schema 定义足够严格时效果相当
 
 ```python
-tools = [
-    {
-        "name": "get_weather",
-        "description": "查询指定城市的实时天气",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "city": {"type": "string", "description": "城市名称"},
-            },
-            "required": ["city"],
-        },
-    }
-]
+# DeepSeek 的 tool_choice 用法与 OpenAI 完全一致
+tool_choice = "auto"                                   # 自主决定
+tool_choice = "required"                               # 强制调用
+tool_choice = {"type": "function", "function": {"name": "get_weather"}}  # 指定工具
 ```
 
 ## 常见错误

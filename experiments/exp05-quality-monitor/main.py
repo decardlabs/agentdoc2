@@ -82,7 +82,7 @@ class QualityEvaluator:
     """评估 Pipeline：规则检查 + LLM-as-Judge"""
 
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     def rule_check(self, log: AgentLog) -> dict:
         """规则级别检查"""
@@ -113,7 +113,7 @@ class QualityEvaluator:
     def llm_judge(self, question: str, answer: str) -> dict:
         """LLM-as-Judge 评分"""
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{
                 "role": "user",
                 "content": f"""你是一个评估专家。请从以下维度评分（1-5分）：

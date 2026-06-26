@@ -4,15 +4,20 @@
 
 Agent 的核心机制依赖程序理解 LLM 的输出。如果输出是自由文本，程序很难稳定解析。**约束输出格式**是让 LLM 从"聊天工具"变成"可编程组件"的关键一步。
 
-## OpenAI Structured Outputs
+## DeepSeek Structured Outputs
 
-OpenAI 的 `response_format` 参数可以强制 LLM 输出 JSON，并严格匹配你提供的 JSON Schema：
+DeepSeek v4 Flash 支持 OpenAI 兼容的 `response_format` 参数，可以强制 LLM 输出 JSON，并严格匹配你提供的 JSON Schema：
+
+### Pydantic 方式
 
 ```python
 from pydantic import BaseModel
 from openai import OpenAI
 
-client = OpenAI()
+client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com",
+)
 
 class WeatherResponse(BaseModel):
     city: str
@@ -22,7 +27,7 @@ class WeatherResponse(BaseModel):
     advice: str
 
 completion = client.beta.chat.completions.parse(
-    model="gpt-4o-mini",
+    model="deepseek-v4-flash",
     messages=[{"role": "user", "content": "深圳今天天气如何？"}],
     tools=[weather_tool],
     response_format=WeatherResponse,   # ← 约束输出格式
@@ -32,13 +37,13 @@ print(f"{weather.city}: {weather.temperature}°C, {weather.condition}")
 print(f"建议: {weather.advice}")
 ```
 
-## 纯 JSON Schema 方式
+### 纯 JSON Schema 方式
 
 不依赖 Pydantic 也可以直接使用：
 
 ```python
 response = client.chat.completions.create(
-    model="gpt-4o-mini",
+    model="deepseek-v4-flash",
     messages=[...],
     response_format={
         "type": "json_schema",
@@ -98,7 +103,12 @@ tools = [
 
 ## 不支持的模型怎么办？
 
-非 OpenAI 模型可能不支持严格的 `response_format`。替代方案：
+DeepSeek v4 Flash 原生支持 `response_format`，但在以下情况你可能需要退而求其次：
+
+1. **使用的模型不支持 `response_format`**：某些旧模型或其他厂商的模型可能不支持
+2. **需要更灵活的控制**：原生 Structured Output 无法覆盖所有边界情况
+
+替代方案——通过 system prompt 约束：
 
 ```python
 # 通过 system prompt 约束

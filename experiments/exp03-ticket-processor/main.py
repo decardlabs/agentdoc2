@@ -104,11 +104,11 @@ def classify_tickets(state: TicketState) -> TicketState:
     print("  [Step 3/5] 分类工单...")
 
     # 让 LLM 生成统计代码
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     data_json = json.dumps(state["raw_data"][:5], ensure_ascii=False)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=[{
             "role": "user",
             "content": f"""CSV 数据样例: {data_json}
@@ -181,13 +181,13 @@ def generate_report(state: TicketState) -> TicketState:
     """节点5：生成报告"""
     print("  [Step 5/5] 生成报告...")
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     stats_text = json.dumps(state.get("statistics", {}), ensure_ascii=False, indent=2)
     errors_text = "\n".join(state.get("errors", [])) if state.get("errors") else "无异常"
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=[{
             "role": "user",
             "content": f"""根据以下工单处理结果生成一份简洁的汇总报告：

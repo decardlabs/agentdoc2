@@ -55,8 +55,11 @@ import json
 from openai import OpenAI
 
 class ReActAgent:
-    def __init__(self, tools: list[dict], tool_handlers: dict[str, callable], model: str = "gpt-4o-mini"):
-        self.client = OpenAI()
+    def __init__(self, tools: list[dict], tool_handlers: dict[str, callable], model: str = "deepseek-v4-flash"):
+        self.client = OpenAI(
+            api_key=os.getenv("DEEPSEEK_API_KEY"),
+            base_url="https://api.deepseek.com",
+        )
         self.tools = tools
         self.tool_handlers = tool_handlers
         self.model = model

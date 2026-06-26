@@ -55,20 +55,23 @@ def semantic_chunk(text: str) -> list[str]:
 
 ### 3. Embedding（向量化）
 
+**注意：** DeepSeek 不提供 embedding API。以下使用 OpenAI 的 embedding API 进行向量化，你也可以使用其他 embedding 服务（如 Jina、Voyage）或开源模型（如 BGE、E5）替代。
+
 ```python
 from openai import OpenAI
 
-client = OpenAI()
+# embedding 需使用专门的 embedding API 提供商
+embedding_client = OpenAI()  # 使用 OpenAI 的 embedding 服务
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    response = client.embeddings.create(
+    response = embedding_client.embeddings.create(
         model="text-embedding-3-small",
         input=texts,
     )
     return [item.embedding for item in response.data]
 
 def embed_query(query: str) -> list[float]:
-    response = client.embeddings.create(
+    response = embedding_client.embeddings.create(
         model="text-embedding-3-small",
         input=[query],
     )
@@ -81,7 +84,7 @@ def embed_query(query: str) -> list[float]:
 import chromadb
 from chromadb.utils import embedding_functions
 
-# 使用 OpenAI 的 embedding 函数
+# 使用 OpenAI 的 embedding 函数（或其他兼容的 embedding provider）
 openai_ef = embedding_functions.OpenAIEmbeddingFunction(
     model_name="text-embedding-3-small"
 )
@@ -109,12 +112,21 @@ results = collection.query(
 
 ### 5. 生成回答
 
+使用 DeepSeek v4 Flash 基于检索到的上下文生成答案：
+
 ```python
+from openai import OpenAI
+
+llm_client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com",
+)
+
 def generate_with_context(query: str, context_chunks: list[str]) -> str:
     context = "\n\n".join(context_chunks)
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
+    response = llm_client.chat.completions.create(
+        model="deepseek-v4-flash",
         messages=[
             {"role": "system", "content": f"""
 你是一个研究助手。基于以下资料回答问题。
@@ -152,21 +164,21 @@ def rag_pipeline(pdf_path: str, query: str) -> str:
         n_results=3,
     )
 
-    # 5. 生成回答
+    # 5. 用 DeepSeek 生成回答
     return generate_with_context(query, results["documents"][0])
 ```
 
 ## 进阶：Reranking
 
-初检索找回 top-k 个结果后，用更精确的模型重新排序：
+初检索找回 top-k 个结果后，用 LLM 重新排序：
 
 ```python
 def rerank(query: str, documents: list[str], top_n: int = 3) -> list[str]:
     """用 LLM 对初步检索结果重新排序"""
     doc_text = "\n\n".join([f"[{i}] {d}" for i, d in enumerate(documents)])
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
+    response = llm_client.chat.completions.create(
+        model="deepseek-v4-flash",
         messages=[{"role": "user", "content": f"""
         问题: {query}
 

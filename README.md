@@ -50,8 +50,7 @@ cd AI-Agent-Learning-Project
 pip install -r requirements.txt
 
 # 3. 设置 API Key
-export OPENAI_API_KEY="sk-..."    # 或
-export ANTHROPIC_API_KEY="sk-..."
+export DEEPSEEK_API_KEY="sk-..."
 
 # 4. 从实验 1 开始
 cd experiments/exp01-weather-assistant
@@ -69,7 +68,7 @@ python main.py
 
 | 层 | 技术选型 | 说明 |
 |----|---------|------|
-| LLM | OpenAI / Anthropic SDK | 原生，不套壳 |
+| LLM | DeepSeek SDK（OpenAI 兼容模式） | 原生，不套壳 |
 | 工具协议 | MCP (Model Context Protocol) | 2025 年事实标准 |
 | 向量库 | ChromaDB | 轻量，开发友好 |
 | 工作流 | LangGraph | 唯一使用的 LangChain 生态组件 |

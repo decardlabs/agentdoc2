@@ -99,14 +99,14 @@ def rerank(query: str, documents: list[str], top_n: int = 3) -> list[str]:
     if not documents:
         return []
 
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     doc_text = "\n\n".join(
         [f"[{i}] {d[:200]}..." for i, d in enumerate(documents)]
     )
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=[{
             "role": "user",
             "content": f"""问题: {query}
@@ -132,7 +132,7 @@ class RAGAgent:
     """基于 RAG 的问答 Agent"""
 
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
         self.vector_store = VectorStore()
         self.doc_loaded = False
 
@@ -168,7 +168,7 @@ class RAGAgent:
         # 3. 生成回答
         context = "\n\n---\n\n".join(results)
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[
                 {
                     "role": "system",
@@ -197,14 +197,14 @@ class Evaluator:
     """LLM-as-Judge 评估器"""
 
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     def evaluate(self, question: str, answer: str, context_chunks: list[str]) -> dict:
         """评估回答质量"""
         context_preview = "\n".join([c[:200] for c in context_chunks[:2]])
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[{
                 "role": "user",
                 "content": f"""你是一个评估专家。请从以下三个维度对回答评分（1-5分）：

@@ -13,18 +13,13 @@ if [ -z "$PYTHON" ]; then
 fi
 echo "✅ Python: $($PYTHON --version)"
 
-# 2. 检查 API Key
-if [ -z "$OPENAI_API_KEY" ]; then
-    echo "⚠ 未设置 OPENAI_API_KEY"
-    echo "  请运行: export OPENAI_API_KEY='sk-...'"
+# 2. 检查 API Key（DeepSeek）
+if [ -z "$DEEPSEEK_API_KEY" ]; then
+    echo "⚠ 未设置 DEEPSEEK_API_KEY"
+    echo "  请申请并设置: export DEEPSEEK_API_KEY='sk-...'"
+    echo "  申请地址: https://platform.deepseek.com/api_keys"
 else
-    echo "✅ OPENAI_API_KEY 已设置"
-fi
-
-if [ -z "$ANTHROPIC_API_KEY" ]; then
-    echo "⚠ 未设置 ANTHROPIC_API_KEY（可选）"
-else
-    echo "✅ ANTHROPIC_API_KEY 已设置"
+    echo "✅ DEEPSEEK_API_KEY 已设置"
 fi
 
 # 3. 创建虚拟环境

@@ -35,12 +35,12 @@ class AgentState(TypedDict):
     messages: list[dict]
     next_step: str
 
-client = OpenAI()
+client = OpenAI(base_url="https://api.deepseek.com")
 
 # 2. 定义节点
 def call_llm(state: AgentState) -> AgentState:
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=state["messages"],
     )
     state["messages"].append({
@@ -84,7 +84,7 @@ class WorkflowState(TypedDict):
     messages: list[dict]
     tool_result: str | None
 
-client = OpenAI()
+client = OpenAI(base_url="https://api.deepseek.com")
 
 # 工具定义
 TOOLS = [
@@ -122,7 +122,7 @@ TOOLS = [
 def handle_ticket(state: WorkflowState) -> WorkflowState:
     """节点1：工单处理"""
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=state["messages"],
         tools=TOOLS,
     )
@@ -143,7 +143,7 @@ def handle_ticket(state: WorkflowState) -> WorkflowState:
 def generate_response(state: WorkflowState) -> WorkflowState:
     """节点2：生成回复"""
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=state["messages"],
     )
     state["messages"].append({

@@ -20,7 +20,7 @@ class MultiAgentTeam:
     """多 Agent 客服团队"""
 
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     def _call(self, system_prompt: str, user_input: str, tools: list = None) -> tuple[str, dict]:
         """调用 LLM（简化版，不含 tool call）"""
@@ -29,7 +29,7 @@ class MultiAgentTeam:
             {"role": "user", "content": user_input},
         ]
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=messages,
             tools=tools,
         )
@@ -81,7 +81,7 @@ class MultiAgentTeam:
         ]
 
         query_response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=query_messages,
             tools=query_tools,
         )

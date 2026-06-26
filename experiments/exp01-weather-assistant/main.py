@@ -107,8 +107,8 @@ TOOL_HANDLERS = {
 # ==================== ReAct Agent ====================
 
 class ReActAgent:
-    def __init__(self, model: str = "gpt-4o-mini"):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    def __init__(self, model: str = "deepseek-v4-flash"):
+        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
         self.model = model
 
     def run(self, user_input: str, max_turns: int = 10) -> tuple[str, list]:

@@ -60,7 +60,7 @@ Agent A → Agent B → Agent C → Agent D
 import json
 from openai import OpenAI
 
-client = OpenAI()
+client = OpenAI(base_url="https://api.deepseek.com")
 
 class SimpleMultiAgent:
     """最简单的多 Agent 协调（Manager-Worker 模式）"""
@@ -74,7 +74,7 @@ class SimpleMultiAgent:
     def _call_agent(self, name: str, task: str) -> str:
         """调用单个 Agent"""
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=[
                 {"role": "system", "content": self.agents[name]},
                 {"role": "user", "content": task},
@@ -129,7 +129,7 @@ print(result["summary"])
 def single_agent_answer(task: str) -> str:
     """同一个任务，用一个 Agent 解决"""
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="deepseek-v4-flash",
         messages=[{"role": "system", "content": "你是全能客服，负责完成所有任务。"},
                   {"role": "user", "content": task}],
     )
@@ -183,7 +183,7 @@ import autogen
 
 assistant = autogen.AssistantAgent(
     name="assistant",
-    llm_config={"config_list": [{"model": "gpt-4o-mini", "api_key": "..."}]},
+    llm_config={"config_list": [{"model": "deepseek-v4-flash", "api_key": "..."}]},
 )
 
 user_proxy = autogen.UserProxyAgent(

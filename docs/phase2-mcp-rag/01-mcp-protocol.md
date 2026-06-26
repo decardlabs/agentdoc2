@@ -120,12 +120,15 @@ class MCPAgent:
     """通过 MCP 协议连接工具的 Agent"""
 
     def __init__(self, server_process, tools: list):
-        self.client = OpenAI()
+        self.client = OpenAI(
+            api_key=os.getenv("DEEPSEEK_API_KEY"),
+            base_url="https://api.deepseek.com",
+        )
         self.server_process = server_process
         self.mcp_tools = tools
 
     def _to_openai_tools(self) -> list[dict]:
-        """将 MCP tool 格式转换为 OpenAI tool 格式"""
+        """将 MCP tool 格式转换为 OpenAI (DeepSeek) tool 格式"""
         openai_tools = []
         for tool in self.mcp_tools:
             openai_tools.append({
@@ -143,7 +146,7 @@ class MCPAgent:
         messages = [{"role": "user", "content": user_input}]
 
         response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="deepseek-v4-flash",
             messages=messages,
             tools=tools,
         )

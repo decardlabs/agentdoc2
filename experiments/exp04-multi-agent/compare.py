@@ -21,7 +21,7 @@ TEST_CASES = [
 ]
 
 def estimate_cost(usage: dict) -> float:
-    """估算费用（gpt-4o-mini 价格）"""
+    """估算费用（deepseek-v4-flash 价格）"""
     prompt_cost = 0.15 / 1_000_000  # 每 token
     completion_cost = 0.60 / 1_000_000
     return (usage.get("prompt_tokens", 0) * prompt_cost +

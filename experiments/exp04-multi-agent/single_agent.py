@@ -61,7 +61,7 @@ TOOLS = [
 
 class SingleAgent:
     def __init__(self):
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"), base_url="https://api.deepseek.com")
 
     def run(self, user_input: str) -> dict:
         messages = [{
@@ -74,7 +74,7 @@ class SingleAgent:
 
         for turn in range(10):
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="deepseek-v4-flash",
                 messages=messages,
                 tools=TOOLS,
             )

@@ -38,7 +38,7 @@ cd "$SCRIPT_DIR"
 echo ""
 echo "--- 实验 4: 多 Agent 客服对比 ---"
 cd experiments/exp04-multi-agent
-python compare.py 2>/dev/null || echo "  ⚠ 实验 4 需要 OPENAI_API_KEY 环境变量"
+python compare.py 2>/dev/null || echo "  ⚠ 实验 4 需要 DEEPSEEK_API_KEY 环境变量"
 cd "$SCRIPT_DIR"
 
 # 实验 5
