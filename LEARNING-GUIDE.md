@@ -16,6 +16,8 @@
 - [每周例行操作](#每周例行操作)
 - [常见瓶颈与解决策略](#常见瓶颈与解决策略)
 - [学习成果检查表](#学习成果检查表)
+- [辅助工具文档](#辅助工具文档)
+- [辅助工具文档](#辅助工具文档)
 
 ---
 
@@ -178,6 +180,8 @@ LEARNING-GUIDE.md  ← 你在这里：每周该做什么
 - [x] 实验 1 的 10 条评估用例全部通过
 - [x] 了解 Agent 的常见失败模式（写了 FAILURES.md）
 - [x] 记录了实验的 token 消耗
+
+> 💡 **学习工具准备：** 开始前建议先阅读 [Obsidian 使用指南](docs/tools/01-obsidian-guide.md) 和 [AI 工作流配置指南](docs/tools/02-ai-workflow-guide.md)，准备好笔记环境和 AI 辅助工具再动手。
 
 ---
 
@@ -642,6 +646,19 @@ LEARNING-GUIDE.md  ← 你在这里：每周该做什么
 - [ ] 计划 1
 - [ ] 计划 2
 ```
+
+---
+
+## 辅助工具文档
+
+在学习过程中，下面两份文档可以帮你准备好环境：
+
+| 文档 | 路径 | 说明 |
+|------|------|------|
+| **Obsidian 使用指南** | [`docs/tools/01-obsidian-guide.md`](docs/tools/01-obsidian-guide.md) | 安装 Obsidian、创建学习笔记、使用双向链接和标签组织知识 |
+| **AI 工作流配置指南** | [`docs/tools/02-ai-workflow-guide.md`](docs/tools/02-ai-workflow-guide.md) | 配置 WorkBuddy / Claude Code 使用 DeepSeek v4 Flash，每个实验的 AI 协作流程 |
+
+**建议：** 阶段一开始之前，先把 Obsidian 装好、把 DeepSeek API Key 配好。这两件事不花多少时间，但能让你后续 6 个月的学习顺畅很多。
 
 ---
 
